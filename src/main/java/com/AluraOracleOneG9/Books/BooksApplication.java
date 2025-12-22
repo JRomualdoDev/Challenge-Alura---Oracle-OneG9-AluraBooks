@@ -1,7 +1,7 @@
 package com.AluraOracleOneG9.Books;
 
 import com.AluraOracleOneG9.Books.index.Index;
-import com.AluraOracleOneG9.Books.repository.AuthorRepository;
+import com.AluraOracleOneG9.Books.service.AuthorService;
 import com.AluraOracleOneG9.Books.service.BookService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,11 +11,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BooksApplication implements CommandLineRunner {
 
     private BookService bookService;
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
 
-    public BooksApplication(BookService bookService,  AuthorRepository authorRepository) {
+    public BooksApplication(BookService bookService,  AuthorService authorService) {
         this.bookService = bookService;
-        this.authorRepository = authorRepository;
+        this.authorService = authorService;
     }
 
 	public static void main(String[] args) {
@@ -25,7 +25,7 @@ public class BooksApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Index index = new Index(bookService,  authorRepository);
+        Index index = new Index(bookService, authorService);
         index.showMenu();
     }
 }
