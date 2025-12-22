@@ -63,10 +63,10 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Author{\n" +
+        return "{\n" +
                 "name='" + name + '\'' + "\n" +
                 "birthYear=" + birthYear + "\n" +
                 "deathYear=" + deathYear + "\n" +
-                '}';
+                '}' + "\n";
     }
 }
