@@ -1,6 +1,8 @@
 package com.AluraOracleOneG9.Books.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,16 +16,31 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(unique = true)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private List<String> summaries;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Set<String> summaries;
 
-    private List<String> subjects;
-    private List<String> bookshelves;
-    private List<String> languages;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Set<String> subjects;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Set<String> bookshelves;
+
+    @ElementCollection
+    @CollectionTable(name = "book_languages", joinColumns = @JoinColumn(name = "book_id"))
+    @Column(name = "language_name")
+    private Set<String> languages;
+
     private boolean copyright;
-    private String mediaTypes;
+
+    private String mediaType;
+
+    @Column(name = "download_count")
     private int downloadCount;
 
     @ElementCollection
@@ -48,35 +65,35 @@ public class Book {
         this.title = title;
     }
 
-    public List<String> getSummaries() {
+    public Set<String> getSummaries() {
         return summaries;
     }
 
-    public void setSummaries(List<String> summaries) {
+    public void setSummaries(Set<String> summaries) {
         this.summaries = summaries;
     }
 
-    public List<String> getSubjects() {
+    public Set<String> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(List<String> subjects) {
+    public void setSubjects(Set<String> subjects) {
         this.subjects = subjects;
     }
 
-    public List<String> getBookshelves() {
+    public Set<String> getBookshelves() {
         return bookshelves;
     }
 
-    public void setBookshelves(List<String> bookshelves) {
+    public void setBookshelves(Set<String> bookshelves) {
         this.bookshelves = bookshelves;
     }
 
-    public List<String> getLanguages() {
+    public Set<String> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(List<String> languages) {
+    public void setLanguages(Set<String> languages) {
         this.languages = languages;
     }
 
@@ -89,11 +106,11 @@ public class Book {
     }
 
     public String getMediaTypes() {
-        return mediaTypes;
+        return mediaType;
     }
 
     public void setMediaTypes(String mediaTypes) {
-        this.mediaTypes = mediaTypes;
+        this.mediaType = mediaTypes;
     }
 
     public int getDownloadCount() {
@@ -118,5 +135,65 @@ public class Book {
 
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        // Stylized header
+        sb.append("************************************************************\n");
+        sb.append(" 📖 TITLE: ").append(title).append("\n");
+        sb.append("************************************************************\n");
+
+        // Basic Information
+        sb.append(String.format("  • Language:      %s\n", languages));
+        sb.append(String.format("  • Downloads:     %d\n", downloadCount));
+        sb.append(String.format("  • Copyright:     %s\n", copyright ? "Yes" : "No"));
+
+        // Authors (Iterating through the list to format each line)
+        sb.append("\n  ✍️  AUTHORS:\n");
+        if (authors != null && !authors.isEmpty()) {
+            for (Author a : authors) {
+                sb.append(String.format("     - %s (%d-%d)\n", a.getName(), a.getBirthYear(), a.getDeathYear()));
+            }
+        } else {
+            sb.append("     - (Unknown)\n");
+        }
+
+        // Subjects/Categories
+        sb.append("\n  📚 SUBJECTS:\n");
+        if (subjects != null) {
+            for (String subject : subjects) {
+                sb.append("     * ").append(subject).append("\n");
+            }
+        }
+
+        // Bookshelves
+        sb.append("\n  🗄️  BOOKSHELVES:\n");
+        if (bookshelves != null) {
+            for (String shelf : bookshelves) {
+                sb.append("     * ").append(shelf).append("\n");
+            }
+        }
+
+        // Download Formats (Map)
+        sb.append("\n  🔗 DOWNLOAD LINKS:\n");
+        if (formats != null) {
+            formats.forEach((type, url) -> {
+                sb.append("     > [").append(type).append("]: ").append(url).append("\n");
+            });
+        }
+
+        // Summary (Usually long, so placed at the end for better readability)
+        sb.append("\n  📝 SUMMARY:\n");
+        if (summaries != null && !summaries.isEmpty()) {
+            // Grab only the first summary if multiple exist, to avoid clutter
+            sb.append("     ").append(summaries.stream().findFirst().get()).append("\n");
+        }
+
+        sb.append("____________________________________________________________\n");
+
+        return sb.toString();
     }
 }
