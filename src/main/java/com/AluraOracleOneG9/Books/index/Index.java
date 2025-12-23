@@ -89,7 +89,7 @@ public class Index {
         System.out.println("\n" + "*".repeat(30) + "\n");
 
         if (bookApi.books().isEmpty()) {
-            System.out.println("Search Empty!!!");
+            System.out.println("Search not found!!!");
             System.out.println("\n" + "*".repeat(30) + "\n");
             return;
         }
