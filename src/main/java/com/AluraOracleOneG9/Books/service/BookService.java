@@ -6,8 +6,6 @@ import com.AluraOracleOneG9.Books.model.Author;
 import com.AluraOracleOneG9.Books.model.Book;
 import com.AluraOracleOneG9.Books.repository.AuthorRepository;
 import com.AluraOracleOneG9.Books.repository.BookRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +15,8 @@ import java.util.stream.Collectors;
 @Service
 public class BookService {
 
-    private BookRepository bookRepository;
-    private AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
     public BookService(BookRepository bookRepository,  AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
