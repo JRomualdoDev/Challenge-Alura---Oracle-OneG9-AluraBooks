@@ -24,7 +24,6 @@ public class ApiConsumption {
         }
 
         System.out.println("Status code: " + response.statusCode());
-        System.out.println("Resposta recebida:");
 
         String json = response.body();
         return json;
